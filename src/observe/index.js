@@ -1,3 +1,5 @@
+import { ArrayMethods } from "./arr.js";
+
 export function observer(data) {
   console.log("data", data);
   if (typeof data !== "object" || data === null) {
@@ -11,7 +13,15 @@ export function observer(data) {
 class Observer {
   // vue2 Object.defineProperty() 缺点:只能一次检测对象中的一个值
   constructor(value) {
-    this.walk(value); // 遍历
+    // 判断数据类型
+    if (Array.isArray(value)) {
+      // Object.setPrototypeOf(ArrayMethods);
+      value.__proto__ = ArrayMethods;
+      // 数组
+      console.log("%c [ index.js ---> value ]: ", "color: orange;", value);
+    } else {
+      this.walk(value); // 遍历
+    }
   }
 
   walk(data) {
@@ -42,7 +52,7 @@ function defineReactive(data, key, value) {
 
       observer(newValue); // newValue 如果是对象,也要再去劫持
       // data[key] = newValue; // data[key],这里会触发 get ,会死循环
-      value = newValue; 
+      value = newValue;
     },
   });
 }
